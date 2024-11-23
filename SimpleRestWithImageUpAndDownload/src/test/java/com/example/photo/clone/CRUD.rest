@@ -25,3 +25,7 @@ content-type: application/json
 {
   
 }
+
+###
+
+GET http://localhost:8080/throw-error/faulty-request
