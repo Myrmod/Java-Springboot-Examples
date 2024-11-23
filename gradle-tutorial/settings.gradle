@@ -1,0 +1,5 @@
+rootProject.name = 'my-multi-module-app'
+
+// those are basically included packages, like multiple monorepos with multiple workspaces
+include 'my-backend'
+include 'my-webapp'
