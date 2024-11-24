@@ -1,0 +1,22 @@
+<div class="col-md-8 offset-md-3">
+  <h2>Create Employee</h2>
+
+  <form [formGroup]="employeeCreationForm" (ngSubmit)="onSubmit()">
+    <div class="form-group mb-3">
+      <label for="firstName"> First Name </label>
+      <input type="text" class="form-control" id="firstName" formControlName="firstName" name="firstName" />
+    </div>
+    <div class="form-group mb-3">
+      <label for="lastName"> Last Name </label>
+      <input type="text" class="form-control" id="lastName" formControlName="lastName" name="lastName" />
+    </div>
+    <div class="form-group mb-3">
+      <label for="emailID"> Email ID </label>
+      <input type="email" class="form-control" id="emailID" formControlName="emailID" name="emailID" />
+    </div>
+
+    <button class="btn btn-success" type="submit">Submit</button>
+  </form>
+</div>
+
+{{ employee.firstName }}
