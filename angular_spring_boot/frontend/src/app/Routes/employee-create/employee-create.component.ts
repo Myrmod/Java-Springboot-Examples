@@ -7,6 +7,8 @@ import {
 
 import { Component } from "@angular/core";
 import { Employee } from "../../Model/employee";
+import { EmployeeService } from "../../Service/employee.service";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-employee-create",
@@ -24,7 +26,24 @@ export class EmployeeCreateComponent {
     emailID: new FormControl("")
   });
 
+  constructor(
+    private employeeService: EmployeeService,
+    private router: Router
+  ) {}
+
   onSubmit() {
     console.log(this.employeeCreationForm.value);
+    this.createEmployee();
+  }
+
+  createEmployee() {
+    this.employeeService.createEmployee(this.employee).subscribe({
+      complete: console.log,
+      error: console.error
+    });
+  }
+
+  goToEmployeeList() {
+    this.router.navigate(["/employees"]);
   }
 }
