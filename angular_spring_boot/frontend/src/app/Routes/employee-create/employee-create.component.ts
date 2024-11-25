@@ -37,6 +37,20 @@ export class EmployeeCreateComponent {
   }
 
   createEmployee() {
+    if (
+      !(
+        this.employeeCreationForm.value.firstName &&
+        this.employeeCreationForm.value.lastName &&
+        this.employeeCreationForm.value.emailID
+      )
+    ) {
+      return;
+    }
+
+    this.employee.firstName = this.employeeCreationForm.value.firstName;
+    this.employee.lastName = this.employeeCreationForm.value.lastName;
+    this.employee.emailID = this.employeeCreationForm.value.emailID;
+
     this.employeeService.createEmployee(this.employee).subscribe({
       complete: console.log,
       error: console.error
