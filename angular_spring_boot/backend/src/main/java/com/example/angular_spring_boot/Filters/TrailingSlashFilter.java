@@ -36,4 +36,50 @@ public class TrailingSlashFilter implements Filter {
     chain.doFilter(requestWrappper, response);
   }
 
+  /*
+   * This is an alternative implementation starting at spring framework 6.2
+   * 
+   * @Override
+   * protected void doFilterInternal(
+   * HttpServletRequest request,
+   * HttpServletResponse response,
+   * FilterChain filterChain) throws ServletException, IOException {
+   * // Redirecting
+   * UrlHandlerFilter filter =
+   * UrlHandlerFilter.trimTrailingSlash("/**").andRedirect(HttpStatus.
+   * PERMANENT_REDIRECT)
+   * .build();
+   * 
+   * // Or transparently handle those for HTTP clients, without any redirect:
+   * UrlHandlerFilter filter =
+   * UrlHandlerFilter.trimTrailingSlash("/**").andHandleRequest().build();
+   * filter.doFilter(request, response, filterChain);
+   * }
+   */
+
+  /*
+   * @Override we can also extend this class with OncePerRequestFilter and return
+   * a redirect
+   * protected void doFilterInternal(
+   * HttpServletRequest request,
+   * HttpServletResponse response,
+   * FilterChain filterChain) throws ServletException, IOException {
+   * String requestUri = request.getRequestURI();
+   * 
+   * if (requestUri.endsWith("/")) {
+   * String newUrl = requestUri.substring(0, requestUri.length() - 1);
+   * response.setStatus(HttpStatus.MOVED_PERMANENTLY.value());
+   * response.setHeader(HttpHeaders.LOCATION, newUrl);
+   * return;
+   * }
+   * 
+   * filterChain.doFilter(request, response);
+   * }
+   */
+
+  /**
+   * Alternitevly in the RestController we can always explicity
+   * declare all routes:
+   * @GetMapping({"/users/{uuid}", "/users/{uuid}/"})
+   */
 }
