@@ -1,6 +1,8 @@
 package com.example.angular_spring_boot.Controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
@@ -51,8 +53,16 @@ public class EmployeeController {
   }
 
   @DeleteMapping("/employees/{id}")
-  public void deleteEmployeeById(@PathVariable Long id) {
-    employeeRepository.deleteById(id);
+  public ResponseEntity<Map<String, Boolean>> deleteEmployeeById(@PathVariable Long id) {
+    Employee employee = employeeRepository.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("Employee does not exists with id " + id));
+
+    employeeRepository.delete(employee);
+
+    Map<String, Boolean> response = new HashMap<>();
+    response.put("deleted", Boolean.TRUE);
+
+    return ResponseEntity.ok(response);
   }
 
   @PutMapping("/employees/{id}")

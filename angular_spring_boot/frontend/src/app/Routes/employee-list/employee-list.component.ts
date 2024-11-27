@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from "@angular/core";
 
 import { Employee } from "../../Model/employee";
 import { EmployeeService } from "../../Service/employee.service";
+import { Observable } from "rxjs";
 import { Router } from "@angular/router";
 
 @Component({
@@ -38,5 +39,11 @@ export class EmployeeListComponent implements OnInit {
 
   public updateEmployee(id: number) {
     this.router.navigate(["/employees/update", id]);
+  }
+
+  public deleteEmployee(id: number) {
+    this.employeeService.deleteEmployee(id).subscribe(_data => {
+      this.getEmployees();
+    });
   }
 }
