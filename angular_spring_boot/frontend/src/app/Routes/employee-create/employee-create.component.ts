@@ -52,7 +52,9 @@ export class EmployeeCreateComponent {
     this.employee.emailID = this.employeeCreationForm.value.emailID;
 
     this.employeeService.createEmployee(this.employee).subscribe({
-      complete: console.log,
+      complete: () => {
+        this.goToEmployeeList();
+      },
       error: console.error
     });
   }

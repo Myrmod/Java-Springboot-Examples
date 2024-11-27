@@ -10,11 +10,14 @@
   </thead>
   <tbody>
     @for (employee of employees; track employee.id) {
-      <tr>
-        <td>{{employee.firstName}}</td>
-        <td>{{employee.lastName}}</td>
-        <td>{{employee.emailID}}</td>
-      </tr>
+    <tr>
+      <td>{{employee.firstName}}</td>
+      <td>{{employee.lastName}}</td>
+      <td>{{employee.emailID}}</td>
+      <td>
+        <button class="btn btn-info" (click)="updateEmployee(employee.id)">Edit</button>
+      </td>
+    </tr>
     }
   </tbody>
 </table>
