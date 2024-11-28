@@ -2,15 +2,25 @@ package com.example.angular_spring_boot.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+  private UserDetailsService userDetailsService;
+
+  public SecurityConfig(UserDetailsService userPrincipalService) {
+    this.userDetailsService = userPrincipalService;
+  }
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -49,6 +59,34 @@ public class SecurityConfig {
     httpSecurity.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
     return httpSecurity.build();
+  }
+
+  /*
+   * @Bean
+   * public UserDetailsService userDetailsService() {
+   * 
+   * This stuff is insecure, but show basic functionality well
+   * UserDetails user = User
+   * .withDefaultPasswordEncoder()
+   * .username("pascal")
+   * .password("password")
+   * .roles("USER")
+   * .build();
+   * 
+   * return new InMemoryUserDetailsManager(user);
+   * 
+   * 
+   * }
+   */
+
+  @Bean
+  public AuthenticationProvider authenticationProvider() {
+    DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+
+    provider.setPasswordEncoder(NoOpPasswordEncoder.getInstance());
+    provider.setUserDetailsService(userDetailsService);
+
+    return provider;
   }
 
 }

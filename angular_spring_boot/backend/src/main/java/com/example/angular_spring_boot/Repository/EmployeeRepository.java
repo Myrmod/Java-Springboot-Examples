@@ -6,6 +6,8 @@ import org.springframework.stereotype.Repository;
 import com.example.angular_spring_boot.Model.Employee;
 
 @Repository
-public interface EmployeeRepository extends JpaRepository<Employee, Long>{
+public interface EmployeeRepository extends JpaRepository<Employee, Long> {
+
+  Employee findByEmailID(String emailID);
 
 }

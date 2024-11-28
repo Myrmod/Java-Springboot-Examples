@@ -21,9 +21,12 @@ public class Employee {
   private String lastName;
   @Column(name = "email_id")
   private String emailID;
+  @Column(name = "password")
+  private String password;
 
   // we need this since hibernate creates empty objects and fills them later
-  public Employee() {}
+  public Employee() {
+  }
 
   public Employee(long id, String firstName, String lastName, String emailID) {
     this.id = id;
@@ -62,6 +65,14 @@ public class Employee {
 
   public void setEmailID(String emailID) {
     this.emailID = emailID;
+  }
+
+  public String getPassword() {
+    return this.password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
   }
 
 }
