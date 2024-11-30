@@ -75,4 +75,8 @@ public class Employee {
     this.password = password;
   }
 
+  public String toString() {
+    return this.firstName + " " + this.lastName + " " + this.emailID + " " + this.password;
+  }
+
 }

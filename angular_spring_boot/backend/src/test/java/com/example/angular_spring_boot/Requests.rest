@@ -1,36 +1,42 @@
+### test
+
+GET http://localhost:8080/api/v1/test/ HTTP/1.1
+Authorization: Basic pascal@example.com:password
+
 ### get all employees
 
 GET http://localhost:8080/api/v1/employees HTTP/1.1
-Authorization: Basic pascal@example.de:password
+Authorization: Basic pascal@example.com:password
 
 ### get one employee
 
-GET http://localhost:8080/api/v1/employees/12 HTTP/1.1
-Authorization: Basic pascal@example.de:password
+GET http://localhost:8080/api/v1/employees/23 HTTP/1.1
+Authorization: Basic pascal@example.com:password
 
 ### post on employee
 
 POST http://localhost:8080/api/v1/employees HTTP/1.1
-Authorization: Basic pascal@example.de:password
+Authorization: Basic pascal@example.com:password
 content-type: application/json
 
 {
-  "firstName": "sample",
-  "lastName": "sample",
-  "emailID": "sample"
+  "firstName": "Bob",
+  "lastName": "Galle",
+  "emailID": "Bob.galle@gmx.de",
+  "password": "password"
 }
 
 ### delete one employee
 
-DELETE http://localhost:8080/api/v1/employees/2 HTTP/1.1
-Authorization: Basic pascal@example.de:password
+DELETE http://localhost:8080/api/v1/employees/24 HTTP/1.1
+Authorization: Basic pascal@example.com:password
 
 ### put on employee
 
-PUT http://localhost:8080/api/v1/employees/1 HTTP/1.1
-Authorization: Basic pascal@example.de:password
+PUT http://localhost:8080/api/v1/employees/25 HTTP/1.1
+Authorization: Basic pascal@example.com:password
 content-type: application/json
 
 {
-  "firstName": "Pascal"
+  "lastName": "Bobble"
 }

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.angular_spring_boot.Exception.ResourceNotFoundException;
 import com.example.angular_spring_boot.Model.Employee;
 import com.example.angular_spring_boot.Repository.EmployeeRepository;
+import com.example.angular_spring_boot.Services.UserPrincipalService;
+import com.example.angular_spring_boot.Utility.EncryptionUtility;
 
 @CrossOrigin
 @RestController
@@ -25,12 +28,23 @@ import com.example.angular_spring_boot.Repository.EmployeeRepository;
 public class EmployeeController {
 
   private EmployeeRepository employeeRepository;
+  private EncryptionUtility encryptionUtility;
+  private UserPrincipalService userPrincipalService;
 
-  public EmployeeController(EmployeeRepository employeeRepository) {
+  @Value("${example.environment.encryptor.salt}")
+  private String encryptorSalt;
+
+  @Value("${example.environment.encryptor.password}")
+  private String encryptorPassword;
+
+  public EmployeeController(EmployeeRepository employeeRepository, EncryptionUtility encryptionUtility,
+      UserPrincipalService userPrincipalService) {
     this.employeeRepository = employeeRepository;
+    this.encryptionUtility = encryptionUtility;
+    this.userPrincipalService = userPrincipalService;
   }
 
-  @GetMapping("/")
+  @GetMapping("/test")
   public String getRoot() {
     return "Hello from root!";
   }
@@ -38,12 +52,19 @@ public class EmployeeController {
   // get all employees
   @GetMapping("/employees")
   public List<Employee> getAllEmployees() {
-    return employeeRepository.findAll();
+    return userPrincipalService.decryptEmployees(employeeRepository.findAll());
   }
 
   @PostMapping("/employees")
   public Employee creatEmployee(@RequestBody Employee employee) {
-    return employeeRepository.save(employee);
+
+    // encryption
+    employee.setPassword(encryptionUtility.encryptOneWay(employee.getPassword()));
+    employee.setFirstName(encryptionUtility.encryptTwoWay(employee.getFirstName()));
+    employee.setLastName(encryptionUtility.encryptTwoWay(employee.getLastName()));
+    employee.setEmailID(encryptionUtility.encryptTwoWay(employee.getEmailID()));
+
+    return userPrincipalService.decryptEmployee(employeeRepository.save(employee));
   }
 
   @GetMapping("/employees/{id}")
@@ -53,7 +74,7 @@ public class EmployeeController {
 
     // since throwing the custom exception would result in an error, we manually set
     // the response status to be ok
-    return ResponseEntity.ok(employee);
+    return ResponseEntity.ok(userPrincipalService.decryptEmployee(employee));
   }
 
   @DeleteMapping("/employees/{id}")
@@ -75,15 +96,15 @@ public class EmployeeController {
         .orElseThrow(() -> new ResourceNotFoundException("Employee does not exists with id " + id));
 
     if (employeeData.getFirstName() != null)
-      employee.setFirstName(employeeData.getFirstName());
+      employee.setFirstName(encryptionUtility.encryptTwoWay(employeeData.getFirstName()));
     if (employeeData.getLastName() != null)
-      employee.setLastName(employeeData.getLastName());
+      employee.setLastName(encryptionUtility.encryptTwoWay(employeeData.getLastName()));
     if (employeeData.getEmailID() != null)
-      employee.setEmailID(employeeData.getEmailID());
+      employee.setEmailID(encryptionUtility.encryptTwoWay(employeeData.getEmailID()));
 
     Employee updatedEmployee = employeeRepository.save(employee);
 
-    return ResponseEntity.ok(updatedEmployee);
+    return ResponseEntity.ok(userPrincipalService.decryptEmployee(updatedEmployee));
   }
 
 }
