@@ -39,6 +39,6 @@ test {
 		showStackTraces true
 
 		// Change from false to true
-		showStandardStreams = true
+		showStandardStreams = false
 	}
 }
