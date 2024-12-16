@@ -4,6 +4,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.core.userdetails.User;
@@ -24,18 +25,23 @@ public class RestSecurityConfig {
 
 		// @formatter:off
         http.authorizeHttpRequests((authz) -> authz
-                // TODO-04: Configure authorization using requestMatchers method
-                // - Allow DELETE on the /accounts resource (or any sub-resource)
-                //   for "SUPERADMIN" role only
-                // - Allow POST or PUT on the /accounts resource (or any sub-resource)
-                //   for "ADMIN" or "SUPERADMIN" role only
-                // - Allow GET on the /accounts resource (or any sub-resource)
-                //   for all roles - "USER", "ADMIN", "SUPERADMIN"
+						// TODO-04: Configure authorization using requestMatchers method
+						// - Allow GET on the /accounts resource (or any sub-resource)
+						//   for all roles - "USER", "ADMIN", "SUPERADMIN"
+						.requestMatchers(HttpMethod.GET, "/accounts/**").hasAnyRole("USER", "ADMIN", "SUPERADMIN")
+						// - Allow POST or PUT on the /accounts resource (or any sub-resource)
+						//   for "ADMIN" or "SUPERADMIN" role only
+						.requestMatchers(HttpMethod.POST, "/accounts/**").hasAnyRole("ADMIN", "SUPERADMIN")
+						// - Allow DELETE on the /accounts resource (or any sub-resource)
+						.requestMatchers(HttpMethod.DELETE, "/accounts/**").hasRole("SUPERADMIN")
+						//   for "SUPERADMIN" role only
+						.requestMatchers("/accounts/**").hasRole("SUPERADMIN")
+						.requestMatchers(HttpMethod.PUT, "/accounts/**").hasAnyRole("ADMIN", "SUPERADMIN")
         		// - Allow GET on the /authorities resource
-                //   for all roles - "USER", "ADMIN", "SUPERADMIN"
-
-                // Deny any request that doesn't match any authorization rule
-                .anyRequest().denyAll())
+						//   for all roles - "USER", "ADMIN", "SUPERADMIN"
+						.requestMatchers(HttpMethod.GET, "/authorities").hasAnyRole("USER", "ADMIN", "SUPERADMIN")
+						// Deny any request that doesn't match any authorization rule
+						.anyRequest().denyAll())
         .httpBasic(withDefaults())
         .csrf(CsrfConfigurer::disable);
         // @formatter:on
@@ -46,18 +52,21 @@ public class RestSecurityConfig {
 	// TODO-14b (Optional): Remove the InMemoryUserDetailsManager definition
 	// - Comment the @Bean annotation below
 	
-	@Bean
+//	@Bean
     public InMemoryUserDetailsManager userDetailsService(PasswordEncoder passwordEncoder) {
 
 		// TODO-05: Add three users with corresponding roles:
 		// - "user"/"user" with "USER" role (example code is provided below)
-		// - "admin"/"admin" with "USER" and "ADMIN" roles
-		// - "superadmin"/"superadmin" with "USER", "ADMIN", and "SUPERADMIN" roles
-		// (Make sure to store the password in encoded form.)
-    	// - pass all users in the InMemoryUserDetailsManager constructor
 		UserDetails user = User.withUsername("user").password(passwordEncoder.encode("user")).roles("USER").build();
 
-		return new InMemoryUserDetailsManager(user /* Add new users comma-separated here */);
+		// - "admin"/"admin" with "USER" and "ADMIN" roles
+		UserDetails admin = User.withUsername("admin").password(passwordEncoder.encode("admin")).roles("USER", "ADMIN").build();
+		// - "superadmin"/"superadmin" with "USER", "ADMIN", and "SUPERADMIN" roles
+		UserDetails superadmin = User.withUsername("superadmin").password(passwordEncoder.encode("superadmin")).roles("USER", "ADMIN", "SUPERADMIN").build();
+		// (Make sure to store the password in encoded form.)
+		// - pass all users in the InMemoryUserDetailsManager constructor
+
+		return new InMemoryUserDetailsManager(user, admin, superadmin /* Add new users comma-separated here */);
 	}
     
     @Bean
