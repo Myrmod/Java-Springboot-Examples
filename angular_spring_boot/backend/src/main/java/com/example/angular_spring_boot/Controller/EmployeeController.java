@@ -80,7 +80,7 @@ public class EmployeeController {
   @DeleteMapping("/employees/{id}")
   public ResponseEntity<Map<String, Boolean>> deleteEmployeeById(@PathVariable Long id) {
     Employee employee = employeeRepository.findById(id)
-        .orElseThrow(() -> new ResourceNotFoundException("Employee does not exists with id " + id));
+      .orElseThrow(() -> new ResourceNotFoundException("Employee does not exists with id " + id));
 
     employeeRepository.delete(employee);
 
@@ -93,7 +93,7 @@ public class EmployeeController {
   @PutMapping("/employees/{id}")
   public ResponseEntity<Employee> updateEmployeeById(@PathVariable Long id, @RequestBody Employee employeeData) {
     Employee employee = employeeRepository.findById(id)
-        .orElseThrow(() -> new ResourceNotFoundException("Employee does not exists with id " + id));
+      .orElseThrow(() -> new ResourceNotFoundException("Employee does not exists with id " + id));
 
     if (employeeData.getFirstName() != null)
       employee.setFirstName(encryptionUtility.encryptTwoWay(employeeData.getFirstName()));
