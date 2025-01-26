@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Logged in</title>
+</head>
+<body>
+  You are logged in!
+
+  <form id="logoutForm" method="POST" th:action="@{/logout}" hidden>
+    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+  </form>
+
+  <button class="nav-link" onclick="document.forms['logoutForm'].submit()">Logout</button>
+</body>
+</html>
