@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -22,8 +23,6 @@ public class FormAuthSecurityConfig {
 		 */
 		httpSecurity
 			.authorizeHttpRequests(auth -> auth
-				.requestMatchers(HttpMethod.GET, "/public/**")
-				.permitAll()
 				.anyRequest()
 				.authenticated()
 			)
@@ -38,5 +37,10 @@ public class FormAuthSecurityConfig {
 			.logout(LogoutConfigurer::permitAll);
 
 		return httpSecurity.build();
+	}
+
+	@Bean
+	public WebSecurityCustomizer removeSecurityFromPublicDirectory() {
+		return (web) -> web.ignoring().requestMatchers("/public/**");
 	}
 }
