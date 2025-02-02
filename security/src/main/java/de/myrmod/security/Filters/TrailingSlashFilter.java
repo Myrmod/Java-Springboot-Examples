@@ -3,6 +3,7 @@ package de.myrmod.security.Filters;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -12,8 +13,8 @@ import java.io.IOException;
  * https://github.com/spring-projects/spring-framework/issues/28552
  * This maps requests without trailing slash to those with
  */
-@Profile("basic")
 @Component
+@ConditionalOnExpression("'${myrmod.environment.authentication}' == 'httpBasic' or '${myrmod.environment.authentication}' == 'oauth2login'")
 public class TrailingSlashFilter implements Filter {
 
   @Override
